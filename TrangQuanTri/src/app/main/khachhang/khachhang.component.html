@@ -1,0 +1,42 @@
+<div class="panel panel-headline">
+    <div class="panel-heading">
+        <h3 class="panel-title">Danh sách khách hàng</h3>
+        <p class="panel-subtitle">Period: Oct 14, 2016 - Oct 21, 2016</p>
+    </div>
+    <div class="panel-body">
+        <!-- <a (click)="createModal()"  class="btn btn-success ">Thêm</a> -->
+        Sắp xếp theo <select name="" class="btn btn-default" id="">
+            <option value="">Ngày đặt</option>
+            <option value="">Trạng thái</option>
+            <option value="">Giá trị tăng dần</option>
+            <option value="">Giá trị giảm dần</option>
+        </select>
+        <br>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>STT</th>
+            <th>Tên</th>
+            <th>Ngày sinh</th>
+             <th>Xóa</th>
+             <td>kênh bán</td>
+        </tr>
+    </thead>
+    <tbody>
+        <ng-container *ngFor="let kh of khachs">
+        <tr  style="cursor: pointer;" title="Xem chi tiết ">
+            <td>{{khachs.indexOf(kh)+1}}</td>
+            <td>{{kh.hoTen}}</td>
+            <td>{{kh.ngaySinh}}</td> 
+           
+            <td><a class="btn btn-danger" >Xóa</a></td>
+            <td><a href="" class="btn btn-info">Xem</a></td>
+        </tr>
+    </ng-container>
+    </tbody>
+</table>
+</div>
+<div> 
+     <ngb-pagination [collectionSize]="total" [pageSize]="size" [(page)]="index" [maxSize]="10" [rotate]="true" (pageChange)="loadPage($event)"></ngb-pagination></div>
+    </div>
+

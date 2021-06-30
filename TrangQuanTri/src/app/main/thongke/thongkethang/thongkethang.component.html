@@ -1,0 +1,293 @@
+<div class="panel panel-headline">
+    <div class="panel-heading">
+        <h3 class="panel-title">Tổng kết tháng {{thang}}/{{namHienTai}}</h3>
+        <form [formGroup]="monthPickerForm" class="form-group">
+            <div class="row">
+                <div class="col-md-2">
+                    <select class="form-control" formControlName="monthPicker"
+                        (change)="thisDamnMonth('s0001',$event.target.value)" div>
+                        <option selected value="">Chọn tháng</option>
+                        <option *ngFor="let m of listMonthPicker" value="{{m}}">{{m}}</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="panel-body">
+        <!-- <div>Đơn Hàng</div>
+        <div class="row">fsefsefsef
+            <div class="col-md-3">sefse
+                <div class="metric">
+                    <span class="icon"><i class="fa fa-download"></i></span>
+                    <p>
+                        <span class="number">1,252</span>
+                        <span class="title">Downloads</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric">
+                    <span class="icon"><i class="fa fa-shopping-bag"></i></span>
+                    <p>
+                        <span class="number">203</span>
+                        <span class="title"> chờ xử lý</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric">
+                    <span class="icon"><i class="fa fa-eye"></i></span>
+                    <p>
+                        <span class="number">203</span>
+                        <span class="title">chờ lấy hàng</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric">
+                    <span class="icon"><i class="fa fa-bar-chart"></i></span>
+                    <p>
+                        <span class="number">203</span>
+                        <span class="title">Trả hàng chờ xử lý</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="metric">
+                    <span class="icon"><i class="fa fa-download"></i></span>
+                    <p>
+                        <span class="number">1,252</span>
+                        <span class="title">Downloads</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric">
+                    <span class="icon"><i class="fa fa-shopping-bag"></i></span>
+                    <p>
+                        <span class="number">203</span>
+                        <span class="title"> chờ xử lý</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric">
+                    <span class="icon"><i class="fa fa-eye"></i></span>
+                    <p>
+                        <span class="number">203</span>
+                        <span class="title">chờ lấy hàng</span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric">
+                    <span class="icon"><i class="fa fa-bar-chart"></i></span>
+                    <p>
+                        <span class="number">203</span>
+                        <span class="title">Trả hàng chờ xử lý</span>
+                    </p>
+                </div>
+            </div>
+        </div> -->
+        <div class="col-md-9">
+           <h3> Tỷ suất doanh thu theo loại</h3>
+                <div class="ct-chart"><google-chart style="height: 400px;width: 600px;" [data]="thismonth.tysuatloai" [type]="type" [options]="options"></google-chart>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="weekly-summary text-right">
+                <span class="number">{{thismonth.doanhthu|currency:'VND'}}</span> 
+                <span class="percentage" *ngIf="lastmonth.doanhthu==0"><i class="fa fa-caret-up text-success"></i> 100%</span>
+                <span class="percentage" *ngIf="lastmonth.doanhthu!=0"><i class="fa fa-caret-up text-success"></i> {{(thismonth.doanhthu-lastmonth.doanhthu)/lastmonth.doanhthu*100|number}}%</span>
+                <span class="info-label">(So với tháng trước:{{lastmonth.doanhthu|currency:'VND'}})</span>
+                <span class="info-label">Tổng doanh thu</span>
+            </div>
+            <div class="weekly-summary text-right">
+                <span class="number">{{thismonth.doanhthu-thismonth.chiphinhap|currency:'VND'}}</span> <span class="percentage"><i class="fa fa-caret-up text-success"></i> 23%</span>
+                <span class="info-label">(So với tháng trước:{{lastmonth.doanhthu-lastmonth.chiphinhap|currency:'VND'}})</span>
+                <span class="info-label">Lợi nhuận trước thuế</span>
+            </div>
+            <div class="weekly-summary text-right">
+                <span class="number">{{thismonth.donvixuat}}</span> <span class="percentage"><i class="fa fa-caret-down text-danger"></i> 8%</span>
+                <span class="info-label">Đơn vị xuất ra</span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END OVERVIEW -->
+<div class="row">
+    <div class="col-md-6">
+        <!-- RECENT PURCHASES -->
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">Chi tiết doanh thu theo loại</h3>
+                <div class="right">
+                    <button type="button" class="btn-toggle-collapse"><i class="lnr lnr-chevron-up"></i></button>
+                    <button type="button" class="btn-remove"><i class="lnr lnr-cross"></i></button>
+                </div>
+            </div>
+            <div class="panel-body no-padding" style="height: 300px; overflow-y: auto;">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Tên loại (chọn để xem chi tiết)</th>
+                            <th><span style="float: right;">Doanh thu</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let dtl of thismonth.doanhthuloai" style="cursor:pointer" (click)="xemchitietloai(dtl.maLoai,doanhThuLoai2)">
+                            <td>{{dtl.tenLoai}}</td>
+                            <td><span style="float: right;">{{dtl.income|currency:'VND'}}</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="panel-footer">
+                <div class="row">
+                    <div class="col-md-6"><span class="panel-note"><i class="fa fa-clock-o"></i> Last 24 hours</span></div>
+                    <div class="col-md-6 text-right"><a href="#" class="btn btn-primary">View All Purchases</a></div>
+                </div>
+            </div>
+        </div>
+        <!-- END RECENT PURCHASES -->
+    </div>
+    <div class="col-md-6">
+        <!-- MULTI CHARTS -->
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">Sản phẩm bán chạy trong tháng</h3>
+                <div class="right">
+                    <button type="button" class="btn-toggle-collapse"><i class="lnr lnr-chevron-up"></i></button>
+                    <button type="button" class="btn-remove"><i class="lnr lnr-cross"></i></button>
+                </div>  
+            </div>
+            <div class="panel-body" >
+              <table class="table" style="height: 300px; overflow-y: auto;">
+                  <thead>
+                      <tr>
+                          <th>Tên sản phẩm</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr *ngFor="let spc of thismonth.spbanchay">
+                          <td>{{spc.tenSanPham}}</td>
+                      </tr>
+                  </tbody>
+              </table>
+            </div>
+        </div>
+        <!-- END MULTI CHARTS -->
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <!-- RECENT PURCHASES -->
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">Danh sách đơn hàng </h3>
+                <div class="right">
+                    <button type="button" class="btn-toggle-collapse"><i class="lnr lnr-chevron-up"></i></button>
+                    <button type="button" class="btn-remove"><i class="lnr lnr-cross"></i></button>
+                </div>
+            </div>
+            <div class="panel-body no-padding" style="height: 300px; overflow-y: auto;">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Ngày đặt</th>
+                            <th><span style="float: right;">Thanh toán</span></th>
+                            <th><span style="float: right;">Tổng tiền</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let dtl of thismonth.dsdonhang" style="cursor:pointer">
+                            <td>{{dtl.ngayDat}}</td>
+                            <td><span style="float: right;">{{dtl.thanhToan}}</span></td>
+                            <td><span style="float: right;">{{dtl.tonggiatri|currency:'VND'}}</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="panel-footer">
+                <div class="row">
+                    <div class="col-md-6"><span class="panel-note"><i class="fa fa-clock-o"></i> Last 24 hours</span></div>
+                    <div class="col-md-6 text-right"><a href="#" class="btn btn-primary">View All Purchases</a></div>
+                </div>
+            </div>
+        </div>
+        <!-- END RECENT PURCHASES -->
+    </div>
+    <div class="col-md-6">
+        <!-- MULTI CHARTS -->
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">Sản phẩm bán chạy trong tháng</h3>
+                <div class="right">
+                    <button type="button" class="btn-toggle-collapse"><i class="lnr lnr-chevron-up"></i></button>
+                    <button type="button" class="btn-remove"><i class="lnr lnr-cross"></i></button>
+                </div>  
+            </div>
+            <div class="panel-body" >
+              <table class="table" style="height: 300px; overflow-y: auto;">
+                  <thead>
+                      <tr>
+                          <th>Tên sản phẩm</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr *ngFor="let spc of thismonth.spbanchay">
+                          <td>{{spc.tenSanPham}}</td>
+                      </tr>
+                  </tbody>
+              </table>
+            </div>
+        </div>
+        <!-- END MULTI CHARTS -->
+    </div>
+</div>
+<div id="DoanhThuModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg full-height-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="titleLSG"></h4>
+            </div>
+
+            <div class="modal-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Doanh thu</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="doanhThuLoaiChiTiet">
+                        <tr>
+                            <th>{{doanhThuLoaiChiTiet[0].loai.tenLoai}}</th>
+                            <th>{{sumAll(doanhThuLoaiChiTiet)|currency:'VND'}}</th>
+                        </tr>
+                        
+                        <tr *ngFor="let detail of doanhThuLoaiChiTiet">
+                            <td>{{detail.tenLoai}}</td>
+                            <td *ngIf="detail.doanhThu">{{detail.doanhThu|currency:'VND'}}</td>
+                            <td *ngIf="!detail.doanhThu">{{0|currency:'VND'}}</td>
+
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-default btn-sm"
+                    onclick="$('#DoanhThuModal').closest('.modal').modal('hide')">
+                    <i class="fa fa-times"></i> Đóng lại
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- END MAIN CONTENT -->

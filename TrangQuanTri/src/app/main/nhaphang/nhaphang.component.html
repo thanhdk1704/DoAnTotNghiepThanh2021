@@ -1,0 +1,102 @@
+<div class="panel panel-headline">
+    <div class="panel-heading">
+        <h3 class="panel-title">Danh sách đơn hàng</h3>
+
+    </div>
+    <div class="panel-body">
+       <p> <a href="main/nhap-hang/new"  class="btn btn-success ">Thêm</a></p>
+        Sắp xếp theo <select name="" class="btn btn-default" id="">
+            <option value="">Ngày đặt</option>
+            <option value="">Trạng thái</option>
+            <option value="">Giá trị tăng dần</option>
+            <option value="">Giá trị giảm dần</option>
+        </select>
+        <br>
+<table class="table table-hover">
+    <thead>
+        <tr >
+            <th>STT</th>
+            <th>Mã</th>
+            <th>Ngày</th>
+            <th>Mã NCC</th>
+            <th>Tổng chi phí</th>
+            <th>Xem</th>
+       
+        </tr>
+    </thead>
+    <tbody>
+        <ng-container>
+        <tr  *ngFor="let hdn of hoadonnhaps" style="cursor: pointer;" title="Xem chi tiết ">
+            <td>{{hoadonnhaps.indexOf(hdn)+1}}</td>
+            <td>{{hdn.maHDN}}</td> 
+            <td>{{hdn.ngayNhap}}</td>
+           <td>{{hdn.maNCC}}</td>
+            <td>{{hdn.tongchiphi|currency:'VND'}}</td>
+            <td><a class="btn btn-info"(click)="detail(hdn.maHDN)" >Xem</a></td>
+        </tr>
+    </ng-container>
+    </tbody>
+</table>
+</div>
+<div>  
+    <ngb-pagination [collectionSize]="totalRecords" [pageSize]="size" [(page)]="index" [maxSize]="10" [rotate]="true" (pageChange)="loadPage($event)"></ngb-pagination></div>
+    </div>
+
+     
+    <div   id="cthdnModal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg full-height-modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4   class="modal-title" id="titleCtdh"></h4>
+            </div>
+           
+              <div *ngIf="hoadonnhap" class="modal-body">
+                  <p>Mã Hóa đơn: <label for="" id="maDH">{{hoadonnhap.maHDN}}</label></p>
+                  <p>Ngày nhập: <label for="" id="maDH">{{hoadonnhap.ngayNhap}}</label></p>
+                  <p>Nhà cung cấp: <label for="" id="tenKH">{{hoadonnhap.nhacungcap.tenNCC}}</label></p>
+                 <p>Địa chỉ: <label for="" id="diaChi">{{hoadonnhap.nhacungcap.diaChi}}</label></p>
+                 <p>SDT: <label for="" id="soDT">{{hoadonnhap.nhacungcap.sdt}}</label></p>
+               
+                <table class="table">
+                  <thead>
+                    <tr>
+                        <td>STT</td>
+                      <th>Tên sản phẩm</th>
+                      <th><span style="float: right;">Số lượng</span></th>
+                      <th><span style="float: right;">Đơn giá</span></th>
+                      <th><span style="float: right;">Thành tiền</span>  </th>
+                    </tr>
+                  </thead>
+                  <tbody >
+                    <tr *ngFor="let it of hoadonnhap.chitiet">
+                        <td>{{hoadonnhap.chitiet.indexOf(it)+1}}</td>
+                      <td>{{it.tenSanPham}}</td>
+                      <td><span style="float: right;">{{it.soluong}}</span></td>
+                      <td ><span style="float: right;">{{it.donGia| currency:'VND'}}</span></td>
+                      <td><span style="float: right;">{{it.donGia*it.soluong|currency:'VND'}}</span></td>
+                    
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                      <tr>
+                          <td></td>
+                          <td><label>Tổng cộng</label></td>
+                          <td><label for="" style="float: right;">{{hoadonnhap.tongdonvi}}</label></td>
+                          <td></td>
+                          <td><label for="" style="float: right;">{{hoadonnhap.tongchiphi|currency:'VND'}}</label></td>
+                      </tr>
+                  </tfoot>
+                </table>
+       
+            </div>
+            <div class="modal-footer">
+             
+              <button type="button" class="btn btn-default btn-sm" onclick="$('#cthdnModal').closest('.modal').modal('hide')">
+                <i class="fa fa-times"></i> Đóng lại
+              </button>
+            </div>
+   
+          </div>
+        </div>
+      </div>
+

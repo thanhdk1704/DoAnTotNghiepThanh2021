@@ -1,0 +1,115 @@
+
+<div class="panel panel-headline">
+    <div class="panel-heading">
+        <h3 class="panel-title">Danh sách nhà cung cấp</h3>
+    </div>
+    <div class="panel-body">
+        <!-- <a (click)="createModal()"  class="btn btn-success ">Thêm</a> -->
+        Sắp xếp theo <select name="" class="btn btn-default" id="">
+            <option value="">Ngày đặt</option>
+            <option value="">Trạng thái</option>
+            <option value="">Giá trị tăng dần</option>
+            <option value="">Giá trị giảm dần</option>
+        </select>
+        <br>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>STT</th>
+            <th>Mã NCC</th>
+            <th>Tên NCC</th>
+             <th>Địa chỉ</th>
+             <td>SĐT</td>
+             <td>Tổng giao dịch</td>
+             <td>Chi tiết</td>
+        </tr>
+    </thead>
+    <tbody>
+        <ng-container *ngFor="let n of nccs">
+        <tr  style="cursor: pointer;" title="Xem chi tiết ">
+            <td>{{nccs.indexOf(n)+1}}</td>
+            <td>{{n.maNCC}}</td>
+            <td>{{n.tenNCC}}</td> 
+           <td>{{n.diaChi}}</td>
+           <td>{{n.sdt}}</td>
+            <td>{{n.value| currency:'VND'}}</td>
+            <td><a  class="btn btn-info" (click)="detail(n.link)" >Xem</a></td>
+        </tr>
+    </ng-container>
+    </tbody>
+</table>
+</div>
+<div> 
+     <ngb-pagination [collectionSize]="totalRecords" [pageSize]="size" [(page)]="index" [maxSize]="10" [rotate]="true" (pageChange)="loadPage($event)"></ngb-pagination></div>
+    </div>
+
+    <div *ngIf="showUpdateModal" id="NCCModal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg full-height-modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4  *ngIf="isCreate" class="modal-title">Nhập thông tin nhà cung cấp</h4>
+              <h4 *ngIf="!isCreate" class="modal-title">Cập nhật thông tin nhà cung cấp</h4>
+            </div>
+            <form *ngIf="doneSetupForm" [formGroup]="formdata"  (ngSubmit)="onSubmit(formdata.value)" class="form-horizontal ">
+              <div class="modal-body ">
+                <table class="table">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <label class="control-label no-padding-right"> Tên nhà cung cấp (<span style="color: red;">*</span>)</label>
+                        <input type="text" placeholder="Tên nhà cung cấp" class="form-control" formControlName="tenNCC"/>
+                        <div *ngIf="submitted && f.tenNCC.errors" class="invalid-feedback">
+                          <div *ngIf="f.tenNCC.errors.required">Vui lòng nhập tên nhà cung cấp</div>
+                        </div>
+                      </td>
+               
+                      <td>
+                        <label class="control-label no-padding-right"> Địa chỉ</label>
+                          <textarea placeholder="Mô tả" class="form-control" formControlName="diaChi"></textarea>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td>
+                        <label class="control-label no-padding-right"> Số điện thoại</label>
+                        <input type="text" class="form-control" placeholder="Số điện thoại" formControlName="sdt">
+                      </td>
+                      <td>
+                        <label class="control-label no-padding-right"> Loại</label>
+                          <select class="form-control" formControlName="maLoai" id="">
+                              <option *ngFor="let l of loais" value="l.maLoai">{{l.tenLoai}}</option>
+                          </select>
+                      </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <label class="control-label no-padding-right"> mô tả</label>
+                        <textarea placeholder="Mô tả" class="form-control" formControlName="moTa"></textarea>
+                       
+                    </td>
+                    <td>
+                      <label class="control-label no-padding-right"> ghi chú</label>
+                        <textarea placeholder="Ghi chú" class="form-control" formControlName="ghiChu"></textarea>
+                       
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              
+            </div>
+            <div class="modal-footer">
+              <button type="reset" class="btn btn-default btn-sm" (click)="reset()">
+                <i class="fa fa-bell"></i> Làm mới
+              </button>
+              <button type="submit" class="btn btn-success btn-sm btn-submit">
+                <i class="fa fa-save"></i> Đồng ý
+              </button>
+              <button type="button" class="btn btn-default btn-sm" onclick="$('#NCCModal').closest('.modal').modal('hide')">
+                <i class="fa fa-times"></i> Đóng lại
+              </button>
+            </div>
+          </form>  
+          </div>
+        </div>
+      </div>
+
+      

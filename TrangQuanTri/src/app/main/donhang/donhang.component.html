@@ -1,0 +1,163 @@
+<div class="panel panel-headline">
+  <div class="panel-heading">
+    <h3 class="panel-title">Danh sách đơn hàng</h3>
+
+    <div id="success_bar" style="display: none;" class="alert alert-success">
+      <a href="#" class="close" data-dismiss="alert">&times;</a>
+      <strong id="success_title"></strong> &nbsp; <span id="success_mess"></span>
+    </div>
+    <h4 class="text-danger">Note: click vào trạng thái để thay đổi trạng thái đơn hàng</h4>
+    <br>
+    <div class="border border-primary">
+      <form>
+        <h4><b>Tìm kiếm đơn hàng</b></h4>
+        <div class="row">
+          <div class="col col-sm-2 text-right"><label for="tenKhachHang">Tên khách hàng</label></div>
+          <div class="col col-sm-4">
+            <input type="text" class="form-control" id="tenKhachHang" placeholder="nhập tên khách hàng">
+          </div>
+          <div class="col col-sm-2 text-right"><label for="ngayDatHang">Ngày đặt hàng</label></div>
+          <div class="col col-sm-4">
+            <input type="date" class="form-control" id="ngayDatHang">
+          </div>
+          <div class="form-group">
+            <div class="col col-sm-2 text-right"><label for="sx">Sắp xếp theo</label></div>
+            <div class="col col-sm-4">
+              <select class="form-control" name="" id="">
+                <option value="0">Trạng thái</option>
+                <option value="1">Ngày đặt tăng dần</option>
+                <option value="2">Ngày đặt giảm dần</option>
+              </select>
+            </div>
+            <div class="col col-sm-2 text-right"><label for="gt">Giá trị</label></div>
+            <div class="col col-sm-4">
+              <select class="form-control" name="" id="">
+                <option selected value="0">Mặc định</option>
+                <option value="1">Tăng dần</option>
+                <option value="2">Giảm dần</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-sm btn-success text-dark">Tìm kiếm</button>
+            <button type="reset" class="btn btn-sm btn-default text-dark  ">Reset</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="panel-body">
+    <!-- <a (click)="createModal()"  class="btn btn-success ">Thêm</a> -->
+    Sắp xếp theo <select name="" class="btn btn-default" id="">
+      <option value="">Ngày đặt</option>
+      <option value="">Trạng thái</option>
+      <option value="">Giá trị tăng dần</option>
+      <option value="">Giá trị giảm dần</option>
+    </select>
+    <br>
+    <table class="table table-hover table-bordered">
+      <thead style="background-color: darkgreen;color: white;">
+        <tr>
+          <th>STT</th>
+          <th>Mã</th>
+          <th>Ngày </th>
+          <th>Khách Hàng</th>
+          <th>Trạng thái</th>
+          <th>Tổng tiền</th>
+          <th>Xem</th>
+
+          <th>Hủy/Đổi trả</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let dh of donhangs">
+          <tr>
+            <td>{{donhangs.indexOf(dh)+1}}</td>
+            <td>{{dh.maDH}}</td>
+            <td>{{dh.ngayDat}}</td>
+            <td>{{dh.thongtinkh.hoTen}}</td>
+            <ng-container>
+              <td [style.background-color]="listTrangThai[dh.trangThai].color"><a (click)="changeStatus(dh.maDH)"
+                  style="cursor: pointer;color: black;"
+                  title="Xác nhận đơn hàng">{{listTrangThai[dh.trangThai].name}}</a>
+              </td>
+            </ng-container>
+            <td><span style="float:right">{{dh.tonggiatri| currency:'VND'}}</span></td>
+
+            <td><a (click)="orderById(dh.maDH)" style="cursor: pointer;"><u>Xem</u></a></td>
+            <td *ngIf="dh.trangThai==6">Đã hủy</td>
+            <td *ngIf="dh.trangThai==7">Đã Trả hàng</td>
+            <td *ngIf="dh.trangThai==5"><a><u> Trả hàng</u></a></td>
+            <td *ngIf="dh.trangThai==4"><a (click)="cancelOrder(dh.maDH)"><u> Hủy đơn</u></a></td>
+            <td *ngIf="dh.trangThai==3"><a (click)="cancelOrder(dh.maDH)"><u>Hủy đơn</u></a></td>
+            <td *ngIf="dh.trangThai==2"><a (click)="cancelOrder(dh.maDH)"><u> Hủy đơn</u></a></td>
+            <td *ngIf="dh.trangThai==1"><a (click)="cancelOrder(dh.maDH)"><u> Hủy đơn</u></a></td>
+            <td *ngIf="dh.trangThai==0"><a (click)="cancelOrder(dh.maDH)"><u>Hủy đơn</u></a></td>
+
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+  <div>
+    <ngb-pagination [collectionSize]="total" [pageSize]="size" [(page)]="index" [maxSize]="10" [rotate]="true"
+      (pageChange)="loadPage($event)"></ngb-pagination>
+  </div>
+</div>
+
+<div id="ctdhModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg full-height-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="titleCtdh"></h4>
+      </div>
+
+      <div class="modal-body">
+        <p>Mã đơn hàng: <label for="" id="maDH"></label></p>
+        <p>Khách hàng: <label for="" id="tenKH"></label></p>
+        <p>Địa chỉ nhận hàng: <label for="" id="diaChi"></label></p>
+        <p>SDT: <label for="" id="soDT"></label></p>
+        <p>Trạng thái: <label for="" id="trangThai"></label></p>
+        <table class="table" *ngIf="donhang">
+          <thead>
+            <tr>
+              <td>STT</td>
+              <th>Tên sản phẩm</th>
+              <th><span style="float: right;">Số lượng</span></th>
+              <th><span style="float: right;">Đơn giá</span></th>
+              <th><span style="float: right;">Thành tiền</span> </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let it of donhang.chitiet">
+              <td>{{donhang.chitiet.indexOf(it)+1}}</td>
+              <td>{{it.tenSanPham}}</td>
+              <td><span style="float: right;">{{it.soLuong}}</span></td>
+              <td><span style="float: right;">{{it.donGia| currency:'VND'}}</span></td>
+              <td><span style="float: right;">{{it.donGia*it.soLuong|currency:'VND'}}</span></td>
+
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td></td>
+              <td><label>Tổng cộng</label></td>
+              <td><label for="" style="float: right;">{{donhang.tongDonVi}}</label></td>
+              <td></td>
+              <td><label for="" style="float: right;">{{donhang.tonggiatri|currency:'VND'}}</label></td>
+            </tr>
+          </tfoot>
+        </table>
+
+      </div>
+      <div class="modal-footer">
+
+        <button type="button" class="btn btn-default btn-sm" onclick="$('#ctdhModal').closest('.modal').modal('hide')">
+          <i class="fa fa-times"></i> Đóng lại
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

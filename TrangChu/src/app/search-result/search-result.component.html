@@ -1,0 +1,268 @@
+<div class="breadcrumbs_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumb_content">
+                    <ul>
+                        <li><a routerLink="">home</a></li>
+                        <li>Tìm kiếm</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--breadcrumbs area end-->
+
+<!--shop  area start-->
+<div class="shop_area shop_reverse">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-12">
+                <!--sidebar widget start-->
+                <aside class="sidebar_widget">
+                    <div class="widget_list widget_categories">
+                        <h3>Danh mục</h3>
+                        <ul>
+                            <ng-container *ngFor="let cate of allLoai">
+                                <li class="widget_sub_categories"  id="loai_{{cate.maLoai}}" >
+                                    <a href="javascript:void(0)">
+                                    <b>{{cate.tenLoai}}</b>
+                                </a>
+                                    <ng-container *ngFor="let cate2 of cate.children">
+                                        <ul class="widget_dropdown_categories">
+                                            <li><a href="#">{{cate2.tenLoai}}</a></li>
+                                        </ul>
+                                    </ng-container>
+                                </li>
+                            </ng-container>
+
+                        </ul>
+                    </div>
+                    <div class="widget_list widget_filter">
+                        <h3>Giá</h3>
+                       <div class="row">
+                           <div class="col-md-6">Min</div>
+                           <div class="col-md-6">Max</div>
+                           <div class="col-md-6"><input type="text" class="form-control"></div> 
+                           <div class="col-md-6"><input type="text" class="form-control"></div>
+                       </div>
+                    </div>
+                    <div class="widget_list widget_categories">
+                        <h3>Manufacturer</h3>
+                        <ul>
+                            <li>
+                                <input id="check1" type="checkbox">
+                                <label for="check1">Calvin Klein (8)</label>
+                                <span class="checkmark"></span>
+                            </li>
+                            <li>
+                                <input id="check2" type="checkbox">
+                                <label for="check2">Diesel (8)</label>
+                                <span class="checkmark"></span>
+                            </li>
+                            <li>
+                                <input id="check3" type="checkbox">
+                                <label for="check3">Tommy Hilfiger (8)</label>
+                                <span class="checkmark"></span>
+                            </li>
+                            <li>
+                                <input id="check4" type="checkbox">
+                                <label for="check4">Versace (8)</label>
+                                <span class="checkmark"></span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="widget_list widget_categories">
+                        <h3>Category</h3>
+                        <ul>
+                            <li>
+                                <input id="check5" type="checkbox">
+                                <label for="check5">Accessories (8)</label>
+                                <span class="checkmark"></span>
+                            </li>
+                            <li>
+                                <input id="check6" type="checkbox">
+                                <label for="check6">Dresses (8)</label>
+                                <span class="checkmark"></span>
+                            </li>
+                            <li>
+                                <input id="check7" type="checkbox">
+                                <label for="check7">Handbags (8)</label>
+                                <span class="checkmark"></span>
+                            </li>
+                            <li>
+                                <input id="check8" type="checkbox">
+                                <label for="check8">Tops (8)</label>
+                                <span class="checkmark"></span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="widget_list tags_widget">
+                        <h3>Product tags</h3>
+                        <div class="tag_cloud">
+                            <a href="#">blouse</a>
+                            <a href="#">clothes</a>
+                            <a href="#">fashion</a>
+                            <a href="#">handbag</a>
+                            <a href="#">laptop</a>
+                        </div>
+                    </div>
+                </aside>
+                <!--sidebar widget end-->
+            </div>
+            <div class="col-lg-9 col-md-12">
+
+                <!--shop banner area start-->
+                <div class="shop_banner_area mb-30">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="shop_banner_thumb">
+                                <h4>kết quả tìm kiếm cho <span class="text">{{keyWord}}</span></h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--shop banner area end-->
+                <!--shop toolbar start-->
+                <div class="shop_toolbar_wrapper">
+                    <div class="shop_toolbar_btn">
+                        <button data-role="grid_4" type="button" class="active btn-grid-4" data-toggle="tooltip"
+                            title="4"></button>
+                        <button data-role="grid_3" type="button" class=" btn-grid-3" data-toggle="tooltip"
+                            title="3"></button>
+                        <button data-role="grid_list" type="button" class="btn-list" data-toggle="tooltip"
+                            title="List"></button>
+                    </div>
+                    <div class="form-group">
+                        <form class="" action="#">
+                            <select name="orderby" (change)="filterSearchResult($event.target.value)"
+                                class="btn btn-default" id="short">
+                                <option selected value="0">Mặc định</option>
+                                <option value="1">Giá Thấp đến cao</option>
+                                <option value="2">Giá cao đến thấp</option>
+                                <option value="3">Sản phẩm mới nhất</option>
+                                <option value="4">Mua nhiều nhất trong tháng</option>
+                                <!-- <option value="5">Sort by price: high to low</option>
+                                <option value="6">Product Name: Z</option> -->
+                            </select>
+                        </form>
+                    </div>
+                    <div class="page_amount">
+                        <p>Có {{tongsl1}} Kết quả</p>
+                    </div>
+                </div>
+                <!--shop toolbar end-->
+                <div class="row shop_wrapper">
+                    <ng-container *ngFor="let spResult of spResults">
+                        <div class="col-lg-3 col-md-4 col-12 ">
+                            <article class="single_product">
+                                <figure>
+                                    <div class="product_thumb">
+                                        <a class="primary_img" href="shop/chi-tiet/{{spResult.link}}"><img
+                                                src="assets/img/product/{{spResult.anh}}" alt=""></a>
+                                        <!-- <a class="secondary_img" href="shop/chi-tiet/{{spResult.link}}"><img
+                                                src="assets/img/product/product2.jpg" alt=""></a> -->
+                                        <div class="label_product">
+                                            <span class="label_new" style="float:left;">Emarket</span>
+
+                                        </div>
+                                        <div class="quick_button">
+                                            <a href="#" data-toggle="modal" data-target="#modal_box"
+                                                title="quick view"><i class="icon-eye"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="product_content grid_content">
+                                        <div class="product_content_inner">
+                                            <h4 class="product_name"><a
+                                                    href="shop/chi-tiet/{{spResult.link}}">{{spResult.tenSanPham}}</a>
+                                            </h4>
+                                            <!-- <div class="product_rating">
+                                                <ul>
+                                                    <li><a href="#"><i class="ion-android-star-outline"></i></a></li>
+                                                    <li><a href="#"><i class="ion-android-star-outline"></i></a></li>
+                                                    <li><a href="#"><i class="ion-android-star-outline"></i></a></li>
+                                                    <li><a href="#"><i class="ion-android-star-outline"></i></a></li>
+                                                    <li><a href="#"><i class="ion-android-star-outline"></i></a></li>
+                                                </ul>
+                                            </div> -->
+                                            <div class="price_box">
+
+                                                <span class="current_price">{{spResult.giahientai.gia |
+                                                    currency:'VND':true:'1.0-2'}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="action_links">
+                                            <ul>
+                                                <li class="add_to_cart"><a (click)="addToCart(spResult)"
+                                                        title="Add to cart">Add to cart</a></li>
+                                                <li class="wishlist"><a (click)="addToWishlist(spResult)"
+                                                        title="Add to Wishlist"><i class="icon-heart"></i></a></li>
+                                                <li class="compare"><a href="#" title="Add to Compare"><i
+                                                            class="icon-rotate-cw"></i></a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="product_content list_content">
+                                        <div class="left_caption">
+                                            <h4 class="product_name"><a
+                                                    [routerlink]="['chi-tiet/',spResult.link]">{{spResult.tenSanPham}}</a>
+                                            </h4>
+                                            <div class="product_rating">
+                                                <ul>
+                                                    <li><a href="#"><i class="ion-android-star-outline"></i></a></li>
+                                                    <li><a href="#"><i class="ion-android-star-outline"></i></a></li>
+                                                    <li><a href="#"><i class="ion-android-star-outline"></i></a></li>
+                                                    <li><a href="#"><i class="ion-android-star-outline"></i></a></li>
+                                                    <li><a href="#"><i class="ion-android-star-outline"></i></a></li>
+                                                </ul>
+                                            </div>
+                                            <div class="price_box">
+                                                <span class="old_price">$320.00</span>
+                                                <span class="current_price">{{spResult.giahientai.gia |
+                                                    currency:'VND':true:'1.0-2'}}</span>
+                                            </div>
+                                            <div class="product_desc">
+                                                <p>{{spResult.moTa}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="right_caption">
+                                            <p class="text_available">Tình trạng: <span
+                                                    *ngIf="spResult.kho.soLuongCon!=0">Còn hàng</span>
+                                                <span *ngIf="spResult.kho.soLuongCon==0">Hết hàng</span>
+                                            </p>
+                                            <div class="action_links">
+                                                <ul>
+                                                    <li class="add_to_cart"><a (click)="addToCart(spResult)"
+                                                            title="Add to cart">Thêm vào giỏ hàng</a></li>
+                                                    <li class="wishlist"><a href="wishlist.html"
+                                                            title="Add to Wishlist"><i class="icon-heart"></i> Add to
+                                                            Wishlist</a></li>
+                                                    <li class="compare"><a href="#" title="compare"><i
+                                                                class="icon-rotate-cw"></i>Add to Compare</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </figure>
+                            </article>
+                        </div>
+                    </ng-container>
+                </div>
+
+                <div class="shop_toolbar t_bottom">
+                    <ngb-pagination [collectionSize]="tongsl1" [pageSize]="size" [(page)]="index" [maxSize]="10"
+                        [rotate]="true" (pageChange)="loadPage($event)"></ngb-pagination>
+                    <div class="pagination">
+
+                    </div>
+                </div>
+                <!--shop toolbar end-->
+                <!--shop wrapper end-->
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<!--shop banner area start-->

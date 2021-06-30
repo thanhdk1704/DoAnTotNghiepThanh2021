@@ -1,0 +1,249 @@
+<div class="panel panel-headline">
+  <div class="panel-heading">
+    <h3 class="panel-title">Weekly Overview</h3>
+    <p id="abc"></p>
+  </div>
+  <div class="panel-body">
+    <div>
+      <form [formGroup]="formSearch" (ngSubmit)="search()">
+        <table class="table">
+          <tr>
+            <td>
+              <label for="tensp">Tìm theo tên</label>
+            </td>
+            <td colspan="2">
+              <label for="giasp">Tìm theo mức giá</label>
+            </td>
+            <td><label>Sắp xếp theo</label></td>
+          </tr>
+
+          <tr>
+            <td>
+              <input type="text" class="form-control" id="tensp" formControlName="tenSp"
+                placeholder="tên sản phẩm hoặc tên loại">
+            </td>
+            <td><input type="text" class="form-control" id="giasp" formControlName="giaMin" placeholder="giá min"></td>
+            <td><input type="text" class="form-control" formControlName="giaMax" placeholder="giá max"></td>
+            <td>
+              <select class="form-control" formControlName="lowToHighPrice" >
+                <option value="">Mặc định</option>
+                <option value="true">Giá thấp đến cao</option>
+                <option value="false">Giá cao đến thấp</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td><label for="">Danh mục</label> </td>
+            <td><label for="">Loại con 1</label> </td>
+            <td><label for="">Loại con 2</label></td>
+          </tr>
+          <tr>
+            <td><select class="form-control" (change)="getLoai1byLoai($event.target.value)" formControlName="loai"
+                name="" id="">
+                <option value="">Chọn</option>
+                <option *ngFor="let ls of loais" [value]="ls.maLoai">{{ls.tenLoai}}</option>
+              </select></td>
+            <td>
+              <select class="form-control" (change)="getLoai2ByLoai1($event.target.value)" formControlName="loai1"
+                name="" id="">
+                <option value="">Loại 1</option>
+                <option *ngFor="let l1s of loai1s" [value]="l1s.maLoai">{{l1s.tenLoai}}</option>
+              </select>
+            </td>
+            <td>
+              <select class="form-control" formControlName="loai2" id="">
+                <option value="">Loại 2</option>
+                <option *ngFor="let l2s of loai2s" [value]="l2s.maLoai">{{l2s.tenLoai}}</option>
+              </select>
+            </td>
+          </tr>
+        </table>
+        <button class="btn btn-default btn-sm" type="submit">Tìm</button>
+        <button class="btn btn-sm btn-danger" type="button" (click)="resetSearchForm()">Reset</button>
+      </form>
+    </div>
+    <br>
+    <a (click)="createModal()" class="btn btn-success btn-sm">Thêm</a>
+    <div>
+      <ngb-pagination [collectionSize]="totalRecords" [pageSize]="size" [(page)]="index" [maxSize]="10" [rotate]="true"
+        (pageChange)="loadPage($event)"></ngb-pagination>
+    </div>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>STT</th>
+          <th>Tên sản phẩm</th>
+          <th>Loại</th>
+          <th>Kho</th>
+          <th>Giá bán</th>
+          <th>Ảnh</th>
+          <th>Chi tiết</th>
+          <th>Xóa</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let sp of list_item">
+          <tr>
+            <td>{{sp.maSanPham}}</td>
+            <td>{{sp.tenSanPham}}</td>
+
+            <td>{{sp.loaicon2.tenLoai}}</td>
+            <td>{{sp.kho.soLuongCon}}</td>
+            <td> <a title="xem lịch sử giá" style="cursor: pointer;" (click)="lichSuGiaBan(sp)"><u>{{sp.giahientai.gia
+                  |currency:'VND'}}</u></a></td>
+            <td></td>
+            <td><a class="btn btn-primary" (click)="openUpdateModal(sp)">Xem</a></td>
+            <td><a class="btn btn-danger" (click)="xoasp(sp.maSanPham)">Xóa</a></td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+  <div>
+    <ngb-pagination [collectionSize]="totalRecords" [pageSize]="size" [(page)]="index" [maxSize]="10" [rotate]="true"
+      (pageChange)="loadPage($event)"></ngb-pagination>
+  </div>
+</div>
+
+<!-- modal -->
+<div *ngIf="showUpdateModal" id="SanphamModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg full-height-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 *ngIf="isCreate" class="modal-title">Nhập thông tin sản phẩm</h4>
+        <h4 *ngIf="!isCreate" class="modal-title">Cập nhật thông tin sản phẩm</h4>
+      </div>
+      <form *ngIf="doneSetupForm" [formGroup]="formdata" (ngSubmit)="onSubmit(formdata.value)" class="form-horizontal ">
+        <div class="modal-body ">
+          <table class="table">
+            <tbody>
+              <tr>
+                <td>
+                  <label class="control-label no-padding-right"> Tên sản phẩm (<span
+                      style="color: red;">*</span>)</label>
+                  <input type="text" placeholder="Tên sản phẩm" class="form-control" formControlName="tensanpham" />
+                  <div *ngIf="submitted && f.tensanpham.errors" class="invalid-feedback">
+                    <div *ngIf="f.tensanpham.errors.required">Vui lòng nhập tên sản phẩm</div>
+                  </div>
+                </td>
+
+                <td>
+                  <label class="control-label no-padding-right"> Loại (<span style="color: red;">*</span>)</label>
+                  <select class="form-control" (change)="getLoai1byLoai($event.target.value)" id="">
+                    <option *ngFor="let slcl of loais" [value]="slcl.maLoai">{{slcl.tenLoai}}</option>
+                  </select>
+                  <select class="form-control" (change)="getLoai2ByLoai1($event.target.value)" id="">
+                    <option *ngFor="let slcl of loai1s" [value]="slcl.maLoai">{{slcl.tenLoai}}</option>
+                  </select>
+                  <select formControlName="maloai2" class="form-control" id="">
+                    <option *ngIf="single_item" [value]="single_item.maloai2" selected>{{single_item.loaicon2.tenLoai}}
+                    </option>
+                    <option *ngFor="let slcl of loai2s" [value]="slcl.maLoai">{{slcl.tenLoai}}</option>
+                  </select>
+                  <div *ngIf="submitted && f.maloai2.errors" class="invalid-feedback">
+                    <div *ngIf="f.maloai2.errors.required">Vui lòng chọn một loại</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label class="control-label no-padding-right"> mô tả</label>
+                  <textarea placeholder="Mô tả" class="form-control" formControlName="mota"></textarea>
+
+                </td>
+                <td>
+                  <label class="control-label no-padding-right"> ghi chú</label>
+                  <textarea placeholder="Ghi chú" class="form-control" formControlName="ghichu"></textarea>
+
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label class="control-label no-padding-right"> Ảnh</label>
+                  <p-fileUpload #file_image mode="advanced" [showUploadButton]="false" cancelLabel="Hủy"
+                    chooseLabel="Chọn ảnh" multiple="false" accept="image/*" maxFileSize="1000000">
+                    <ng-template pTemplate="content">
+                      <img *ngIf="user && user.image_url" style="height: 100px;width: 100px;" [src]="user.image_url">
+                    </ng-template>
+                  </p-fileUpload>
+                </td>
+                <td>
+                  <label class="control-label no-padding-right"> Số lượng</label>
+                  <input type="text" class="form-control" value="0" formControlName="soluong" />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label class="control-label no-padding-right"> Giá nhập</label>
+                  <input type="text" class="form-control" formControlName="gianhap" />
+                  <div *ngIf="submitted && f.gianhap.errors" class="invalid-feedback">
+                    <div *ngIf="f.gianhap.errors.required">Vui lòng chọn một loại</div>
+                  </div>
+                </td>
+                <td>
+                  <label class="control-label no-padding-right"> Giá bán</label>
+                  <input type="text" class="form-control" formControlName="giaban" />
+                  <div *ngIf="submitted && f.giaban.errors" class="invalid-feedback">
+                    <div *ngIf="f.giaban.errors.required">Vui lòng nhập giá bán</div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+        <div class="modal-footer">
+          <button type="reset" class="btn btn-default btn-sm" (click)="reset()">
+            <i class="fa fa-bell"></i> Làm mới
+          </button>
+          <button type="submit" class="btn btn-success btn-sm btn-submit">
+            <i class="fa fa-save"></i> Đồng ý
+          </button>
+          <button type="button" class="btn btn-default btn-sm" (click)="closeModal()">
+            <i class="fa fa-times"></i> Đóng lại
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="LSgiaModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg full-height-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="titleLSG"></h4>
+      </div>
+
+      <div class="modal-body">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Giá</th>
+              <th>Ngày bd áp dụng</th>
+              <th>Ngày kết thúc</th>
+              <th>Giá trị giao dịch</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="single_item">
+            <tr *ngFor="let g of single_item.dsgiaban">
+              <td>{{g.gia|currency:'VND'}}</td>
+              <td>{{g.ngayBD}}</td>
+              <td *ngIf="g.ngayKT">{{g.ngayKT}}</td>
+              <td *ngIf=!g.ngayKT>đang áp dụng</td>
+              <td>{{g.revenue|currency:'VND'}}</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+      <div class="modal-footer">
+
+        <button type="button" class="btn btn-default btn-sm" onclick="$('#LSgiaModal').closest('.modal').modal('hide')">
+          <i class="fa fa-times"></i> Đóng lại
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
